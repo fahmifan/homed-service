@@ -1,7 +1,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-run_cmd := go run
+run_cmd := go run main.go
 
 BINARY		:= homed-service
 NAME		:= ${REGISTRY}
@@ -10,17 +10,8 @@ TAG			:= ${VERSION}-$$(git rev-parse --short HEAD)
 IMAGE		:= ${NAME}\:${TAG}
 LATEST		:= ${NAME}\:latest
 
-run-http: 
-	@$(run_cmd) cmd/http/main.go
-
-check-swagger:
-	@which swagger || (GO111MODULE=off go get -u github.com/go-swagger/go-swagger/cmd/swagger)
-
-swagger: check-swagger
-	@cd cmd/http && swagger generate spec -o ./swagger.yaml --scan-models
-
-serve-swagger: check-swagger
-	@cd cmd/http && swagger serve -F=swagger swagger.yaml
+run: 
+	@$(run_cmd) server
 
 build:
 	@echo ">>> build binary"
