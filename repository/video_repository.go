@@ -102,7 +102,7 @@ func (r *videoRepository) Create(ctx context.Context, reader *multipart.Reader, 
 
 		videoBytes := video.Marshall()
 		err = b.Put(utils.Int64ToBytes(video.ID), videoBytes)
-		log.Println(video.ID, string(videoBytes))
+		log.Info(video.ID, string(videoBytes))
 		return err
 	})
 
@@ -157,7 +157,7 @@ func (r *videoRepository) Recreate(ctx context.Context, reader *multipart.Reader
 
 		videoBytes := video.Marshall()
 		err = b.Put(utils.Int64ToBytes(video.ID), videoBytes)
-		log.Println(video.ID, string(videoBytes))
+		log.Info(video.ID, string(videoBytes))
 		return err
 	})
 
@@ -198,7 +198,7 @@ func (r *videoRepository) Update(ctx context.Context, videoID int64, video *mode
 
 		videoBytes := video.Marshall()
 		err = b.Put(bid, videoBytes)
-		log.Println(video.ID, string(videoBytes))
+		log.Info(video.ID, string(videoBytes))
 		return err
 	})
 
@@ -222,9 +222,9 @@ func (r *videoRepository) DeleteByID(ctx context.Context, id int64) (video *mode
 		t := time.Now()
 		video.DeletedAt = &t
 
-		log.Printf("%#v", video)
-
-		err := b.Put(utils.Int64ToBytes(video.ID), video.Marshall())
+		videoBytes := video.Marshall()
+		log.Info(video.ID, videoBytes)
+		err := b.Put(utils.Int64ToBytes(video.ID), videoBytes)
 		return err
 	})
 
@@ -268,14 +268,14 @@ func (r *videoRepository) createHLS(sourcePath, destPath string) {
 	opt := []string{"-i", sourcePath, "-c:a", "aac", "-strict", "experimental", "-c:v", "libx264", "-f", "hls", "-hls_time", "60", "-hls_list_size", "0", destPath}
 
 	now := time.Now()
-	log.Println("ffmpeg", strings.Join(opt, " "))
+	log.Infoln("ffmpeg", strings.Join(opt, " "))
 	cmd := exec.Command("ffmpeg", opt...)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Error(err, ": ", string(output))
 		return
 	}
-	log.Println(fmt.Sprintf("took: %.2f minutes | finished create playlist %s", time.Since(now).Minutes(), destPath))
+	log.Info(fmt.Sprintf("took: %.2f minutes | finished create playlist %s", time.Since(now).Minutes(), destPath))
 
 	// remove source video
 	if err := os.Remove(sourcePath); err != nil {
@@ -283,5 +283,5 @@ func (r *videoRepository) createHLS(sourcePath, destPath string) {
 		return
 	}
 
-	log.Println("success remove source: " + sourcePath)
+	log.Info("success remove source: " + sourcePath)
 }
