@@ -48,6 +48,7 @@ func (s *Server) initRouter() {
 
 	r := s.router
 	r.Use(cors.Handler)
+	r.Get("/ping", ping)
 	r.Get("/api/videos", s.videoService.FindAll)
 	r.Post("/api/videos", s.videoService.Create)
 	r.Post("/api/videos/{id}/recreate", s.videoService.Recreate)
@@ -89,4 +90,8 @@ func (s *Server) Run() {
 
 	log.Println("http service listening on :" + config.Port())
 	http.ListenAndServe(":"+config.Port(), s.router)
+}
+
+func ping(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, map[string]string{"ping": "pong"})
 }
