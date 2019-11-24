@@ -25,6 +25,7 @@ var ErrVideoNotFound = errors.New("video not found")
 // VideoRepository :nodoc:
 type VideoRepository interface {
 	Create(ctx context.Context, reader *multipart.Reader, video *model.Video) error
+	Recreate(ctx context.Context, reader *multipart.Reader, id int64, video *model.Video) error
 	Update(ctx context.Context, videoID int64, video *model.Video) error
 	FindAll(ctx context.Context) ([]*model.Video, error)
 	DeleteByID(ctx context.Context, id int64) (*model.Video, error)
@@ -106,6 +107,99 @@ func (r *videoRepository) Create(ctx context.Context, reader *multipart.Reader, 
 	playlistName := fmt.Sprintf("%d.m3u8", video.ID)
 	playListPath := dir + "/" + playlistName
 	go r.createHLS(path, playListPath)
+
+	return nil
+}
+
+func (r *videoRepository) SaveVideo(ctx context.Context, reader *multipart.Reader, videoID int64) (fileName, path string, err error) {
+	dir := fmt.Sprintf("videos/%d", videoID)
+	// remove source video
+	if err = os.RemoveAll(dir); err != nil {
+		log.Error(err)
+		return
+	}
+
+	for {
+		var part *multipart.Part
+		part, err = reader.NextPart()
+		if err == io.EOF {
+			break
+		}
+
+		if part.FileName() == "" {
+			continue
+		}
+
+		fileName = part.FileName()
+		path = dir + "/" + part.FileName()
+		if _, err := os.Stat(dir); os.IsNotExist(err) {
+			err = os.MkdirAll(dir, 0755)
+			if err != nil {
+				panic(err)
+			}
+		}
+
+		var dst *os.File
+		dst, err = os.Create(path)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		defer dst.Close()
+
+		if _, err = io.Copy(dst, part); err != nil {
+			log.Error(err)
+			return
+		}
+	}
+
+	return
+}
+
+func (r *videoRepository) Recreate(ctx context.Context, reader *multipart.Reader, id int64, video *model.Video) (err error) {
+	var fileName, sourcePath string
+	dir := fmt.Sprintf("videos/%d", id)
+
+	err = r.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(model.VideoBucket())
+		bid := utils.Int64ToBytes(id)
+		v := b.Get(bid)
+
+		if string(v) == "" {
+			return ErrVideoNotFound
+		}
+
+		*video = *(model.NewVideoFromBytes(v))
+		if video.DeletedAt != nil {
+			return ErrVideoNotFound
+		}
+
+		fileName, sourcePath, err = r.SaveVideo(ctx, reader, id)
+
+		fileNameOri := fileName[:len(fileName)-4]
+		ext := fileName[len(fileName)-4:]
+
+		video.Name = fileNameOri
+		video.Ext = ext
+		video.UpdatedAt = time.Now()
+
+		videoBytes := video.Marshall()
+		err = b.Put(utils.Int64ToBytes(video.ID), videoBytes)
+		log.Println(video.ID, string(videoBytes))
+		return err
+	})
+
+	if err != nil {
+		log.WithFields(log.Fields{
+			"source":  sourcePath,
+			"context": ctx,
+		}).Error(err)
+		return err
+	}
+
+	playlistName := fmt.Sprintf("%d.m3u8", video.ID)
+	playListPath := dir + "/" + playlistName
+	go r.createHLS(sourcePath, playListPath)
 
 	return nil
 }

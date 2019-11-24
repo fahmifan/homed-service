@@ -62,6 +62,33 @@ func (s *VideoService) Create(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, &video)
 }
 
+// Recreate :nodoc:
+func (s *VideoService) Recreate(w http.ResponseWriter, r *http.Request) {
+	videoID := utils.String2Int64(chi.URLParam(r, "id"))
+	if videoID <= 0 {
+		writeError(w, errors.New("invalid id"), http.StatusBadRequest)
+		return
+	}
+
+	reader, err := r.MultipartReader()
+	if err != nil {
+		log.Error(err)
+		writeError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	video := model.Video{}
+	err = s.videoRepo.Recreate(context.Background(), reader, videoID, &video)
+	log.Println(video)
+	if err != nil {
+		log.Error(err)
+		writeError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	writeJSON(w, &video)
+}
+
 // DeleteByID :nodoc:
 func (s *VideoService) DeleteByID(w http.ResponseWriter, r *http.Request) {
 	videoID := utils.String2Int64(chi.URLParam(r, "id"))

@@ -50,6 +50,7 @@ func (s *Server) initRouter() {
 	r.Use(cors.Handler)
 	r.Get("/api/videos", s.videoService.FindAll)
 	r.Post("/api/videos", s.videoService.Create)
+	r.Post("/api/videos/{id}/recreate", s.videoService.Recreate)
 	r.Delete("/api/videos/{id}", s.videoService.DeleteByID)
 	r.Put("/api/videos/{id}", s.videoService.Update)
 	r.Get("/media/{id:[0-9]+}/{ts:[0-9]+.ts}", s.videoService.ServeHLSTs)
