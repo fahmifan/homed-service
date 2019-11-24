@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 
+<a name="v0.3.1"></a>
+## [v0.3.1] - 2019-11-25
+### Feature
+- rollback to use old distribution
+
+
 <a name="v0.3.0"></a>
 ## [v0.3.0] - 2019-11-25
 ### Feature
@@ -11,6 +17,11 @@
 - add console command for interaction
 - add ping handler
 - add build for arm7
+
+
+<a name="v0.2.0"></a>
+## [v0.2.0] - 2019-11-24
+### Feature
 - add recreate video
 - recreate video
 
@@ -21,5 +32,7 @@
 - video service
 
 
-[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.3.0...HEAD
-[v0.3.0]: https://gitlab.com/homed/homde-service/compare/v0.1.0...v0.3.0
+[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.3.1...HEAD
+[v0.3.1]: https://gitlab.com/homed/homde-service/compare/v0.3.0...v0.3.1
+[v0.3.0]: https://gitlab.com/homed/homde-service/compare/v0.2.0...v0.3.0
+[v0.2.0]: https://gitlab.com/homed/homde-service/compare/v0.1.0...v0.2.0

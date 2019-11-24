@@ -1,7 +1,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-run_cmd := go run main.go
+run_cmd := go run
 
 BINARY		:= homed-service
 NAME		:= ${REGISTRY}
@@ -10,8 +10,8 @@ TAG			:= ${VERSION}-$$(git rev-parse --short HEAD)
 IMAGE		:= ${NAME}\:${TAG}
 LATEST		:= ${NAME}\:latest
 
-run: 
-	@$(run_cmd) server
+run-http:
+	@$(run_cmd) cmd/http/main.go
 
 build:
 	@echo ">>> build binary"
