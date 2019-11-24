@@ -32,3 +32,6 @@ build-with-tag:
 	@GOARCH=amd64 GOOS=windows go build -ldflags="-w -s" -o output/${BINARY}_windows_${TAG}.exe ./cmd/... && upx output/${BINARY}_windows_${TAG}.exe
 	@GOARCH=amd64 GOOS=linux go build -ldflags="-w -s" -o output/${BINARY}_linux_${TAG} ./cmd/... && upx output/${BINARY}_linux_${TAG}
 	@echo ">>> finished"
+
+changelog:
+	@git-chglog -o CHANGELOG.md 
