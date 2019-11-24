@@ -2,13 +2,33 @@ package config
 
 import (
 	"os"
+
+	"github.com/joho/godotenv"
+	log "github.com/sirupsen/logrus"
 )
 
 // defaults
 const (
 	DefaultHTTPort    string = "8080"
 	DefaultBoltDBName        = "homed.db"
+	DefaultEnv               = "development"
 )
+
+func init() {
+	err := godotenv.Load()
+	if err == nil {
+		log.Info("loading .env file")
+	}
+}
+
+// Env :nodoc:
+func Env() string {
+	if val, ok := os.LookupEnv("ENV"); ok {
+		return val
+	}
+
+	return DefaultEnv
+}
 
 // Port :nodoc:
 func Port() string {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/joho/godotenv"
+	"gitlab.com/homed/homed-service/config"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -15,11 +15,6 @@ var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: "Run homed server",
 	Run: func(cmd *cobra.Command, args []string) {
-		err := godotenv.Load()
-		if err == nil {
-			log.Info("loading .env file")
-		}
-
 		server := restapi.NewServer()
 		server.Run()
 	},
@@ -28,8 +23,10 @@ var serverCmd = &cobra.Command{
 var rootCmd = &cobra.Command{Use: "homed"}
 
 func init() {
-	log.SetFormatter(&log.JSONFormatter{})
-	log.SetLevel(log.InfoLevel)
+	if config.Env() == "production" {
+		log.SetFormatter(&log.JSONFormatter{})
+		log.SetLevel(log.InfoLevel)
+	}
 }
 
 // Execute command
