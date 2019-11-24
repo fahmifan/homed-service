@@ -4,7 +4,7 @@
 
 <a name="v0.3.1"></a>
 ## [v0.3.1] - 2019-11-25
-### Feature
+### Bugfix
 - rollback to use old distribution
 
 
