@@ -40,84 +40,8 @@ func NewVideo(db *bolt.DB) VideoRepository {
 	return &videoRepository{db: db}
 }
 
-func (r *videoRepository) Create(ctx context.Context, reader *multipart.Reader, video *model.Video) (err error) {
-	var dir string
-	var fileName string
-	var path string
-	video.ID = time.Now().Unix()
-
-	for {
-		part, err := reader.NextPart()
-		if err == io.EOF {
-			break
-		}
-
-		if part.FileName() == "" {
-			continue
-		}
-
-		fileName = part.FileName()
-		dir = fmt.Sprintf("videos/%d", video.ID)
-		path = dir + "/" + part.FileName()
-		if _, err := os.Stat(dir); os.IsNotExist(err) {
-			err = os.MkdirAll(dir, 0755)
-			if err != nil {
-				panic(err)
-			}
-		}
-
-		dst, err := os.Create(path)
-		if err != nil {
-			log.Error(err)
-			return err
-		}
-		defer dst.Close()
-
-		if _, err := io.Copy(dst, part); err != nil {
-			log.Error(err)
-			return err
-		}
-	}
-
-	fileNameOri := fileName[:len(fileName)-4]
-	ext := fileName[len(fileName)-4:]
-
-	video.Name = fileNameOri
-	video.Ext = ext
-	video.CreatedAt = time.Now()
-	video.UpdatedAt = video.CreatedAt
-
-	err = r.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket(model.VideoBucket())
-
-		videoBytes := video.Marshall()
-		err = b.Put(utils.Int64ToBytes(video.ID), videoBytes)
-		log.Println(video.ID, string(videoBytes))
-		return err
-	})
-
-	if err != nil {
-		log.WithFields(log.Fields{
-			"source":  path,
-			"context": ctx,
-		}).Error(err)
-		return err
-	}
-
-	playlistName := fmt.Sprintf("%d.m3u8", video.ID)
-	playListPath := dir + "/" + playlistName
-	go r.createHLS(path, playListPath)
-
-	return nil
-}
-
 func (r *videoRepository) SaveVideo(ctx context.Context, reader *multipart.Reader, videoID int64) (fileName, path string, err error) {
 	dir := fmt.Sprintf("videos/%d", videoID)
-	// remove source video
-	if err = os.RemoveAll(dir); err != nil {
-		log.Error(err)
-		return
-	}
 
 	for {
 		var part *multipart.Part
@@ -156,6 +80,47 @@ func (r *videoRepository) SaveVideo(ctx context.Context, reader *multipart.Reade
 	return
 }
 
+func (r *videoRepository) Create(ctx context.Context, reader *multipart.Reader, video *model.Video) (err error) {
+	video.ID = time.Now().Unix()
+	dir := fmt.Sprintf("videos/%d", video.ID)
+	fileName, path, err := r.SaveVideo(ctx, reader, video.ID)
+	if err != nil && err != io.EOF {
+		log.Error(err)
+		return
+	}
+
+	fileNameOri := fileName[:len(fileName)-4]
+	ext := fileName[len(fileName)-4:]
+
+	video.Name = fileNameOri
+	video.Ext = ext
+	video.CreatedAt = time.Now()
+	video.UpdatedAt = video.CreatedAt
+
+	err = r.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(model.VideoBucket())
+
+		videoBytes := video.Marshall()
+		err = b.Put(utils.Int64ToBytes(video.ID), videoBytes)
+		log.Println(video.ID, string(videoBytes))
+		return err
+	})
+
+	if err != nil {
+		log.WithFields(log.Fields{
+			"source":  path,
+			"context": ctx,
+		}).Error(err)
+		return err
+	}
+
+	playlistName := fmt.Sprintf("%d.m3u8", video.ID)
+	playListPath := dir + "/" + playlistName
+	go r.createHLS(path, playListPath)
+
+	return nil
+}
+
 func (r *videoRepository) Recreate(ctx context.Context, reader *multipart.Reader, id int64, video *model.Video) (err error) {
 	var fileName, sourcePath string
 	dir := fmt.Sprintf("videos/%d", id)
@@ -172,6 +137,13 @@ func (r *videoRepository) Recreate(ctx context.Context, reader *multipart.Reader
 		*video = *(model.NewVideoFromBytes(v))
 		if video.DeletedAt != nil {
 			return ErrVideoNotFound
+		}
+
+		// remove source video
+		err = os.RemoveAll(dir)
+		if err != nil {
+			log.Error(err)
+			return err
 		}
 
 		fileName, sourcePath, err = r.SaveVideo(ctx, reader, id)
