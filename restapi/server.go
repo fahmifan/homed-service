@@ -49,7 +49,7 @@ func (s *Server) initRouter() {
 	r := s.router
 	r.Use(cors.Handler)
 	r.Get("/ping", ping)
-	r.Get("/api/videos", s.videoService.FindAll)
+	r.Get("/api/videos", s.videoService.Find)
 	r.Post("/api/videos", s.videoService.Create)
 	r.Post("/api/videos/{id}/recreate", s.videoService.Recreate)
 	r.Delete("/api/videos/{id}", s.videoService.DeleteByID)

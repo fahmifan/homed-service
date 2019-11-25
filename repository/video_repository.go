@@ -29,6 +29,7 @@ type VideoRepository interface {
 	Update(ctx context.Context, videoID int64, video *model.Video) error
 	FindAll(ctx context.Context) ([]*model.Video, error)
 	DeleteByID(ctx context.Context, id int64) (*model.Video, error)
+	FindByTitle(ctx context.Context, title string) ([]*model.Video, error)
 }
 
 type videoRepository struct {
@@ -260,6 +261,35 @@ func (r *videoRepository) FindAll(ctx context.Context) (videos []*model.Video, e
 	if err != nil {
 		log.Error(err)
 	}
+
+	return
+}
+
+func (r *videoRepository) FindByTitle(ctx context.Context, title string) (videos []*model.Video, err error) {
+	r.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(model.VideoBucket())
+
+		err = b.ForEach(func(k, v []byte) error {
+			if string(v) == "" {
+				return nil
+			}
+
+			video := model.NewVideoFromBytes(v)
+			if strings.ToLower(video.Name) == strings.ToLower(title) {
+				videos = append(videos, video)
+				return nil
+			}
+
+			return nil
+		})
+
+		if err != nil {
+			log.WithFields(log.Fields{"title": title}).Error(err)
+			return err
+		}
+
+		return nil
+	})
 
 	return
 }

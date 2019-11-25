@@ -27,19 +27,49 @@ func NewVideo(v repository.VideoRepository) *VideoService {
 	}
 }
 
-// FindAll find all videos
-func (s *VideoService) FindAll(w http.ResponseWriter, r *http.Request) {
-	videos, err := s.videoRepo.FindAll(context.Background())
+// ServeHLSM3U8 :nodoc:
+func (s *VideoService) ServeHLSM3U8(w http.ResponseWriter, r *http.Request) {
+	videoID := chi.URLParam(r, "id")
+	mediaFile := fmt.Sprintf("videos/%s/%s.m3u8", videoID, videoID)
+	http.ServeFile(w, r, mediaFile)
+	w.Header().Set("Content-Type", "application/x-mpegURL")
+}
+
+// ServeHLSTs :nodoc:
+func (s *VideoService) ServeHLSTs(w http.ResponseWriter, r *http.Request) {
+	videoID := chi.URLParam(r, "id")
+	ts := chi.URLParam(r, "ts")
+	mediaFile := fmt.Sprintf("videos/%s/%s", videoID, ts)
+	http.ServeFile(w, r, mediaFile)
+	w.Header().Set("Content-Type", "video/MP2T")
+}
+
+// Find find all videos
+func (s *VideoService) Find(w http.ResponseWriter, r *http.Request) {
+	var videos []*model.Video
+	var err error
+	titleVals, titleOK := r.URL.Query()["title"]
+
+	ctx := context.Background()
+	switch {
+	case titleOK && len(titleVals) > 0 && titleVals[0] != "":
+		videos, err = s.videoRepo.FindByTitle(ctx, titleVals[0])
+	default:
+		videos, err = s.videoRepo.FindAll(ctx)
+	}
+
 	if err != nil {
 		log.Error(err)
 		writeError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	if err := writeJSON(w, videos); err != nil {
-		log.Error(err)
-		writeError(w, err, http.StatusInternalServerError)
+	if len(videos) == 0 {
+		writeError(w, errors.New("video not found"), http.StatusNotFound)
+		return
 	}
+
+	writeJSON(w, videos)
 }
 
 // Create :nodoc:
@@ -124,21 +154,4 @@ func (s *VideoService) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, video)
-}
-
-// ServeHLSM3U8 :nodoc:
-func (s *VideoService) ServeHLSM3U8(w http.ResponseWriter, r *http.Request) {
-	videoID := chi.URLParam(r, "id")
-	mediaFile := fmt.Sprintf("videos/%s/%s.m3u8", videoID, videoID)
-	http.ServeFile(w, r, mediaFile)
-	w.Header().Set("Content-Type", "application/x-mpegURL")
-}
-
-// ServeHLSTs :nodoc:
-func (s *VideoService) ServeHLSTs(w http.ResponseWriter, r *http.Request) {
-	videoID := chi.URLParam(r, "id")
-	ts := chi.URLParam(r, "ts")
-	mediaFile := fmt.Sprintf("videos/%s/%s", videoID, ts)
-	http.ServeFile(w, r, mediaFile)
-	w.Header().Set("Content-Type", "video/MP2T")
 }
