@@ -2,6 +2,13 @@
 ## [Unreleased]
 
 
+<a name="v0.5.0"></a>
+## [v0.5.0] - 2019-12-04
+### Feature
+- log http request
+- add upload video cover
+
+
 <a name="v0.4.0"></a>
 ## [v0.4.0] - 2019-11-25
 ### Feature
@@ -38,7 +45,8 @@
 - video service
 
 
-[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.4.0...HEAD
+[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.5.0...HEAD
+[v0.5.0]: https://gitlab.com/homed/homde-service/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://gitlab.com/homed/homde-service/compare/v0.3.1...v0.4.0
 [v0.3.1]: https://gitlab.com/homed/homde-service/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://gitlab.com/homed/homde-service/compare/v0.2.0...v0.3.0
