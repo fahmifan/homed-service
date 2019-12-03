@@ -54,6 +54,10 @@ func (s *Server) initRouter() {
 	r.Post("/api/videos/{id}/recreate", s.videoService.Recreate)
 	r.Delete("/api/videos/{id}", s.videoService.DeleteByID)
 	r.Put("/api/videos/{id}", s.videoService.Update)
+
+	r.Get("/api/cover/{cover}", s.videoService.ServeCover)
+	r.Post("/api/cover", s.videoService.UploadCover)
+
 	r.Get("/media/{id:[0-9]+}/{ts:[0-9]+.ts}", s.videoService.ServeHLSTs)
 	r.Get("/media/{id:[0-9]+}/stream", s.videoService.ServeHLSM3U8)
 
