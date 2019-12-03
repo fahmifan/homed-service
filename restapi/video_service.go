@@ -2,10 +2,15 @@ package restapi
 
 import (
 	"context"
+	"crypto/rand"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"mime"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"gitlab.com/homed/homed-service/utils"
 
@@ -14,6 +19,8 @@ import (
 	"gitlab.com/homed/homed-service/model"
 	"gitlab.com/homed/homed-service/repository"
 )
+
+const maxUploadSize = 1 * 1024 * 1024 // 2 mb
 
 // VideoService :nodoc:
 type VideoService struct {
@@ -154,4 +161,80 @@ func (s *VideoService) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, video)
+}
+
+// UploadCover :nodoc:
+func (s *VideoService) UploadCover(w http.ResponseWriter, r *http.Request) {
+	// validate file size
+	r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
+	if err := r.ParseMultipartForm(maxUploadSize); err != nil {
+		writeError(w, errors.New("file too big"), http.StatusBadRequest)
+		return
+	}
+
+	// parse and validate file and post parameters
+	file, _, err := r.FormFile("cover")
+	if err != nil {
+		writeError(w, errors.New("invalid file"), http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	fileBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		writeError(w, errors.New("invalid file"), http.StatusBadRequest)
+		return
+	}
+
+	// check file type, detectcontenttype only needs the first 512 bytes
+	detectedFileType := http.DetectContentType(fileBytes)
+	switch detectedFileType {
+	case "image/jpeg", "image/jpg":
+	case "image/gif", "image/png":
+	case "application/pdf":
+		break
+	default:
+		writeError(w, errors.New("invalid file"), http.StatusBadRequest)
+		return
+	}
+	fileName := randToken(18)
+	fileEndings, err := mime.ExtensionsByType(detectedFileType)
+	if err != nil {
+		writeError(w, errors.New("can't read file type"), http.StatusBadRequest)
+		return
+	}
+	coverName := fileName + fileEndings[0]
+	newPath := filepath.Join("cover", coverName)
+
+	// write file
+	newFile, err := os.Create(newPath)
+	if err != nil {
+		writeError(w, errors.New("can't write file"), http.StatusBadRequest)
+		return
+	}
+
+	defer newFile.Close() // idempotent, okay to call twice
+	if _, err := newFile.Write(fileBytes); err != nil || newFile.Close() != nil {
+		writeError(w, errors.New("can't write file"), http.StatusBadRequest)
+		return
+	}
+
+	resp := map[string]string{
+		"cover": coverName,
+	}
+
+	writeJSON(w, resp)
+}
+
+// ServeCover :nodoc:
+func (s *VideoService) ServeCover(w http.ResponseWriter, r *http.Request) {
+	cover := chi.URLParam(r, "cover")
+	mediaFile := filepath.Join("cover", cover)
+	http.ServeFile(w, r, mediaFile)
+}
+
+func randToken(len int) string {
+	b := make([]byte, len)
+	rand.Read(b)
+	return fmt.Sprintf("%x", b)
 }
