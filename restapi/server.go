@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/boltdb/bolt"
-
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	log "github.com/sirupsen/logrus"
 	"gitlab.com/homed/homed-service/config"
@@ -48,6 +48,7 @@ func (s *Server) initRouter() {
 
 	r := s.router
 	r.Use(cors.Handler)
+	r.Use(middleware.Logger)
 	r.Get("/ping", ping)
 	r.Get("/api/videos", s.videoService.Find)
 	r.Post("/api/videos", s.videoService.Create)
