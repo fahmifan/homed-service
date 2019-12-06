@@ -1,0 +1,302 @@
+{
+	"info": {
+		"_postman_id": "3f6c15ee-7d61-42e1-9c09-29bf1f8bf67b",
+		"name": "mobcom-homed",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "videos",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "video",
+									"description": "overloard",
+									"type": "file",
+									"src": "/home/miun/Videos/overloard ep 1.mkv",
+									"disabled": true
+								},
+								{
+									"key": "video",
+									"description": "watermelon",
+									"type": "file",
+									"src": "/home/miun/Videos/watermelon-movie.mp4",
+									"disabled": true
+								},
+								{
+									"key": "video",
+									"description": "oppo reno",
+									"type": "file",
+									"src": "/home/miun/Videos/OPPO Reno2 Series _ Appearance - YouTube.mkv",
+									"disabled": true
+								},
+								{
+									"key": "video",
+									"type": "file",
+									"src": "/home/miun/Videos/watermelon-movie.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/api/videos",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/videos?",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"videos"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "halo",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/videos/1574559629",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"videos",
+								"1574559629"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1574672453,\n    \"name\": \"Oppo Reno 2\",\n    \"ext\": \".mkv\",\n    \"category\": \"\",\n    \"cover\": \"3bcab5b82d28ed2f94c663bb9968b8926866.png\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/videos/:videoID",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"videos",
+								":videoID"
+							],
+							"variable": [
+								{
+									"key": "videoID",
+									"value": "1574672453"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "recreate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "video",
+									"type": "file",
+									"src": "/home/miun/Videos/watermelon-movie.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/api/videos/:id/recreate",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"videos",
+								":id",
+								"recreate"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1574563793",
+									"description": "video id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload cover",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "cover",
+									"type": "file",
+									"src": "/home/miun/Pictures/tilda_small.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/api/cover",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"cover"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find cover",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/cover/:cover",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"cover",
+								":cover"
+							],
+							"variable": [
+								{
+									"key": "cover",
+									"value": "eeebfdb37b9bcc2a63a47347b228475398ae.png"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "login pintas",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "opr",
+									"value": "pwdLogin",
+									"type": "text"
+								},
+								{
+									"key": "userName",
+									"value": "muhammad16192",
+									"type": "text"
+								},
+								{
+									"key": "pwd",
+									"value": "FahmiIrfan28!",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://172.22.0.13/ac_portal/login.php",
+							"protocol": "http",
+							"host": [
+								"172",
+								"22",
+								"0",
+								"13"
+							],
+							"path": [
+								"ac_portal",
+								"login.php"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
