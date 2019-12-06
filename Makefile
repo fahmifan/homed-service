@@ -29,3 +29,7 @@ build-with-tag:
 
 changelog:
 	@git-chglog -o CHANGELOG.md 
+
+push-master:
+	@git push origin master
+	@git push mirror master
