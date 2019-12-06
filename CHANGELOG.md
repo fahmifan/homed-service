@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 
+<a name="v0.6.0"></a>
+## [v0.6.0] - 2019-12-06
+### Feature
+- add cover to video
+
+
 <a name="v0.5.0"></a>
 ## [v0.5.0] - 2019-12-04
 ### Feature
@@ -45,7 +51,8 @@
 - video service
 
 
-[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.5.0...HEAD
+[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.6.0...HEAD
+[v0.6.0]: https://gitlab.com/homed/homde-service/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://gitlab.com/homed/homde-service/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://gitlab.com/homed/homde-service/compare/v0.3.1...v0.4.0
 [v0.3.1]: https://gitlab.com/homed/homde-service/compare/v0.3.0...v0.3.1
