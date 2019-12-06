@@ -13,6 +13,7 @@ type Video struct {
 	ID        int64      `json:"id"`
 	Name      string     `json:"name"`
 	Ext       string     `json:"ext"`
+	Cover     string     `json:"cover"`
 	Category  string     `json:"category"`
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
