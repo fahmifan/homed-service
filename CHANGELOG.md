@@ -3,6 +3,12 @@
 <a name="unreleased"></a>
 
 
+<a name="v0.8.0"></a>
+## [v0.8.0] - 2019-12-11
+### Feature
+- add find video by id
+
+
 <a name="v0.7.0"></a>
 ## [v0.7.0] - 2019-12-10
 ### Feature
@@ -58,7 +64,8 @@
 - video service
 
 
-[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.7.0...HEAD
+[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.8.0...HEAD
+[v0.8.0]: https://gitlab.com/homed/homde-service/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://gitlab.com/homed/homde-service/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://gitlab.com/homed/homde-service/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://gitlab.com/homed/homde-service/compare/v0.4.0...v0.5.0
