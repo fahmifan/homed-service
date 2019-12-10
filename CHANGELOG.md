@@ -1,5 +1,12 @@
+# Homed Service
+
 <a name="unreleased"></a>
-## [Unreleased]
+
+
+<a name="v0.7.0"></a>
+## [v0.7.0] - 2019-12-10
+### Feature
+- serve www client
 
 
 <a name="v0.6.0"></a>
@@ -51,7 +58,8 @@
 - video service
 
 
-[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.6.0...HEAD
+[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.7.0...HEAD
+[v0.7.0]: https://gitlab.com/homed/homde-service/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://gitlab.com/homed/homde-service/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://gitlab.com/homed/homde-service/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://gitlab.com/homed/homde-service/compare/v0.3.1...v0.4.0
