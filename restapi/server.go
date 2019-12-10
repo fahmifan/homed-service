@@ -51,6 +51,7 @@ func (s *Server) initRouter() {
 	r.Use(middleware.Logger)
 	r.Get("/ping", ping)
 	r.Get("/api/videos", s.videoService.Find)
+	r.Get("/api/videos/{id}", s.videoService.FindByID)
 	r.Post("/api/videos", s.videoService.Create)
 	r.Post("/api/videos/{id}/recreate", s.videoService.Recreate)
 	r.Delete("/api/videos/{id}", s.videoService.DeleteByID)

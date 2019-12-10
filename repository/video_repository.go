@@ -30,6 +30,7 @@ type VideoRepository interface {
 	FindAll(ctx context.Context) ([]*model.Video, error)
 	DeleteByID(ctx context.Context, id int64) (*model.Video, error)
 	FindByTitle(ctx context.Context, title string) ([]*model.Video, error)
+	FindByID(ctx context.Context, id int64) (*model.Video, error)
 }
 
 type videoRepository struct {
@@ -314,4 +315,26 @@ func (r *videoRepository) createHLS(sourcePath, destPath string) {
 	}
 
 	log.Info("success remove source: " + sourcePath)
+}
+
+// FindByID :nodoc:
+func (r *videoRepository) FindByID(ctx context.Context, id int64) (*model.Video, error) {
+	var video *model.Video
+	err := r.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(model.VideoBucket())
+		v := b.Get(utils.Int64ToBytes(id))
+
+		if string(v) == "" {
+			return nil
+		}
+
+		video = model.NewVideoFromBytes(v)
+		if video.DeletedAt != nil {
+			return nil
+		}
+
+		return nil
+	})
+
+	return video, err
 }

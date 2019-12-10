@@ -79,6 +79,27 @@ func (s *VideoService) Find(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, videos)
 }
 
+// FindByID :nodoc:
+func (s *VideoService) FindByID(w http.ResponseWriter, r *http.Request) {
+	var err error
+	videoID := utils.String2Int64(chi.URLParam(r, "id"))
+
+	ctx := context.Background()
+	video, err := s.videoRepo.FindByID(ctx, videoID)
+	if err != nil {
+		log.Error(err)
+		writeError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	if video == nil {
+		writeError(w, err, http.StatusNotFound)
+		return
+	}
+
+	writeJSON(w, video)
+}
+
 // Create :nodoc:
 func (s *VideoService) Create(w http.ResponseWriter, r *http.Request) {
 	reader, err := r.MultipartReader()
