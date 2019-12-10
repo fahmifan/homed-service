@@ -4,3 +4,4 @@
 /.env
 /output
 /*.db
+/www

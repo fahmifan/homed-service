@@ -63,6 +63,29 @@ func (s *Server) initRouter() {
 	r.Get("/media/{id:[0-9]+}/stream", s.videoService.ServeHLSM3U8)
 
 	FileServer(r, "/videos")
+	serveWWW(r, "/")
+}
+
+func serveWWW(r chi.Router, path string) {
+	workDir, _ := os.Getwd()
+	filesDir := filepath.Join(workDir, "www")
+
+	root := http.Dir(filesDir)
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit URL parameters.")
+	}
+
+	fs := http.StripPrefix(path, http.FileServer(root))
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}))
 }
 
 // FileServer conveniently sets up a http.FileServer handler to serve
