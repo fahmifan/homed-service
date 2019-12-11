@@ -60,10 +60,9 @@ func (s *Server) initRouter() {
 	r.Get("/api/cover/{cover}", s.videoService.ServeCover)
 	r.Post("/api/cover", s.videoService.UploadCover)
 
-	r.Get("/media/{id:[0-9]+}/{ts:[0-9]+.ts}", s.videoService.ServeHLSTs)
-	r.Get("/media/{id:[0-9]+}/stream", s.videoService.ServeHLSM3U8)
+	r.Get("/api/media/{id:[0-9]+}/{ts:[0-9]+.ts}", s.videoService.ServeHLSTs)
+	r.Get("/api/media/{id:[0-9]+}/stream", s.videoService.ServeHLSM3U8)
 
-	FileServer(r, "/videos")
 	serveWWW(r, "/")
 }
 
