@@ -27,6 +27,17 @@ build-with-tag:
 	@GOOS=linux GOARCH=arm GOARM=7 go build -ldflags="-w -s" -o output/${BINARY}_arm7_${TAG} ./cmd/... && upx output/${BINARY}_arm7_${TAG}
 	@echo ">>> finished"
 
+build-multi:
+	@git checkout ${VERSION} > /dev/null 2>&1
+	@echo ">>> build windows binary"
+	@GOARCH=amd64 GOOS=windows go build -ldflags="-w -s" -o output/${BINARY}_windows_${VERSION}.exe ./cmd/... && upx output/${BINARY}_windows_${VERSION}.exe
+	@echo ">>> build linux binary"
+	@GOARCH=amd64 GOOS=linux go build -ldflags="-w -s" -o output/${BINARY}_linux_${VERSION} ./cmd/... && upx output/${BINARY}_linux_${VERSION}
+	@echo ">>> build arm binary"
+	@GOOS=linux GOARCH=arm GOARM=7 go build -ldflags="-w -s" -o output/${BINARY}_arm7_${VERSION} ./cmd/... && upx output/${BINARY}_arm7_${VERSION}
+	@echo ">>> finished"
+	@git checkout master > /dev/null 2>&1
+
 changelog:
 	@git-chglog -o CHANGELOG.md 
 
