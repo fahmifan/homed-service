@@ -93,7 +93,7 @@ func (s *VideoService) FindByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if video == nil {
-		writeError(w, err, http.StatusNotFound)
+		writeError(w, errors.New("not found"), http.StatusNotFound)
 		return
 	}
 
