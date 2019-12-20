@@ -38,8 +38,13 @@ build-multi:
 	@echo ">>> finished"
 	@git checkout master > /dev/null 2>&1
 
+
 changelog:
-	@git-chglog -o CHANGELOG.md 
+ifdef version
+	@git-chglog --next-tag $(version) -o CHANGELOG.md
+else
+	@git-chglog -o CHANGELOG.md
+endif
 
 push-master:
 	@git push origin master
