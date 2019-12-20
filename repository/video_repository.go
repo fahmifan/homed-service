@@ -42,6 +42,15 @@ func NewVideo(db *bolt.DB) VideoRepository {
 	return &videoRepository{db: db}
 }
 
+func validateVideoType(videoType string) bool {
+	switch videoType {
+	case "video/mp4", "video/mkv", "video/flv":
+		return true
+	default:
+		return false
+	}
+}
+
 func (r *videoRepository) SaveVideo(ctx context.Context, reader *multipart.Reader, videoID int64) (fileName, path string, err error) {
 	dir := fmt.Sprintf("videos/%d", videoID)
 
@@ -50,6 +59,12 @@ func (r *videoRepository) SaveVideo(ctx context.Context, reader *multipart.Reade
 		part, err = reader.NextPart()
 		if err == io.EOF {
 			break
+		}
+
+		contentType := part.Header.Get("Content-Type")
+		if ok := validateVideoType(contentType); !ok {
+			err = errors.New("invalid file")
+			return
 		}
 
 		if part.FileName() == "" {
