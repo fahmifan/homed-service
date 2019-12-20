@@ -3,6 +3,12 @@
 <a name="unreleased"></a>
 
 
+<a name="v0.10.0"></a>
+## [v0.10.0] - 2019-12-20
+### Feature
+- add video type validation
+
+
 <a name="v0.9.1"></a>
 ## [v0.9.1] - 2019-12-17
 ### Feature
@@ -79,7 +85,8 @@
 - video service
 
 
-[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.9.1...HEAD
+[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.10.0...HEAD
+[v0.10.0]: https://gitlab.com/homed/homde-service/compare/v0.9.1...v0.10.0
 [v0.9.1]: https://gitlab.com/homed/homde-service/compare/v0.9.0...v0.9.1
 [v0.9.0]: https://gitlab.com/homed/homde-service/compare/v0.8.0...v0.9.0
 [v0.8.0]: https://gitlab.com/homed/homde-service/compare/v0.7.0...v0.8.0
