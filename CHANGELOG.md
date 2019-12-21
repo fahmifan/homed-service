@@ -3,8 +3,11 @@
 <a name="unreleased"></a>
 
 
-<a name="v0.11.0"></a>
-## [v0.11.0] - 2019-12-21
+<a name="v0.9.0"></a>
+## [v0.9.0] - 2019-12-21
+### Bugfix
+- change video/mkv to video/x-matroska
+
 ### Feature
 - make mp4 to hls transcoding faster
 - add video type validation
@@ -75,8 +78,8 @@
 - video service
 
 
-[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.11.0...HEAD
-[v0.11.0]: https://gitlab.com/homed/homde-service/compare/v0.8.0...v0.11.0
+[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.9.0...HEAD
+[v0.9.0]: https://gitlab.com/homed/homde-service/compare/v0.8.0...v0.9.0
 [v0.8.0]: https://gitlab.com/homed/homde-service/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://gitlab.com/homed/homde-service/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://gitlab.com/homed/homde-service/compare/v0.5.0...v0.6.0
