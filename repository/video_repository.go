@@ -311,7 +311,17 @@ func (r *videoRepository) FindByTitle(ctx context.Context, title string) (videos
 }
 
 func (r *videoRepository) createHLS(sourcePath, destPath string) {
-	opt := []string{"-i", sourcePath, "-c:a", "aac", "-strict", "experimental", "-c:v", "libx264", "-f", "hls", "-hls_time", "60", "-hls_list_size", "0", destPath}
+	opt := []string{
+		"-i", sourcePath,
+		"-codec:", "copy",
+		"-bsf:v", "h264_mp4toannexb",
+		"-preset", "veryfast",
+		"-f", "hls",
+		"-hls_time", "10",
+		"-start_number", "0",
+		"-hls_list_size", "0",
+		destPath,
+	}
 
 	now := time.Now()
 	log.Infoln("ffmpeg", strings.Join(opt, " "))
