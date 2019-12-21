@@ -44,7 +44,7 @@ func NewVideo(db *bolt.DB) VideoRepository {
 
 func validateVideoType(videoType string) bool {
 	switch videoType {
-	case "video/mp4", "video/mkv", "video/flv":
+	case "video/mp4", "video/x-matroska", "video/flv":
 		return true
 	default:
 		return false
