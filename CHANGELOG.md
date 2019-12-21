@@ -3,25 +3,15 @@
 <a name="unreleased"></a>
 
 
-<a name="v0.10.0"></a>
-## [v0.10.0] - 2019-12-20
+<a name="v0.11.0"></a>
+## [v0.11.0] - 2019-12-21
 ### Feature
+- make mp4 to hls transcoding faster
 - add video type validation
-
-
-<a name="v0.9.1"></a>
-## [v0.9.1] - 2019-12-17
-### Feature
 - update media endpoint
 
 ### Fix
 - accesing nil error
-
-
-<a name="v0.9.0"></a>
-## [v0.9.0] - 2019-12-11
-### Feature
-- update media endpoint
 
 
 <a name="v0.8.0"></a>
@@ -85,10 +75,8 @@
 - video service
 
 
-[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.10.0...HEAD
-[v0.10.0]: https://gitlab.com/homed/homde-service/compare/v0.9.1...v0.10.0
-[v0.9.1]: https://gitlab.com/homed/homde-service/compare/v0.9.0...v0.9.1
-[v0.9.0]: https://gitlab.com/homed/homde-service/compare/v0.8.0...v0.9.0
+[Unreleased]: https://gitlab.com/homed/homde-service/compare/v0.11.0...HEAD
+[v0.11.0]: https://gitlab.com/homed/homde-service/compare/v0.8.0...v0.11.0
 [v0.8.0]: https://gitlab.com/homed/homde-service/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://gitlab.com/homed/homde-service/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://gitlab.com/homed/homde-service/compare/v0.5.0...v0.6.0
